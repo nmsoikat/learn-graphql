@@ -1,0 +1,3 @@
+- Redux and RTK both solve the same problem. RTK just makes Redux easier, faster, and more modern.
+- Redux Toolkit (RTK) is built on top of Redux. It’s not a replacement — it’s a modern layer on top of Redux that makes it easier to use.
+- When you install RTK, it already includes Redux as a dependency.
