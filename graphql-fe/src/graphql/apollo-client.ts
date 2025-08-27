@@ -40,3 +40,15 @@ export default client;
 // });
 
 // export default client;
+
+
+//* ApolloLink is part of the Apollo Client library.
+// ApolloLink is used to create custom middleware for Apollo Client.
+
+// Operation: The GraphQL request (query, variables, context)
+// Forward: Function that passes request to the next link
+
+// * HttpLink is the transport link — it actually sends the request to your GraphQL server
+// HttpLink does not call forward()
+
+// link: This property defines the request pipeline. Any middleware you want to run before the request is sent

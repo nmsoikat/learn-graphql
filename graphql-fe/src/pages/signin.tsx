@@ -14,6 +14,8 @@ export default function Login() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const result = await dispatch(login(form));
+
+        //true if the result.type === 'login/fulfilled'
         if (login.fulfilled.match(result)) {
             router.push('/');
         }

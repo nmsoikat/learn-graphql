@@ -2,18 +2,43 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { gql } from '@apollo/client';
 import client from '../../graphql/apollo-client';
+import { UsersState } from '@/interfaces/User';
 
-interface User {
-    id: string;
-    name: string;
-    email: string;
-}
+const GET_USERS_QUERY = gql`
+  query GetUsers {
+    users {
+      id
+      name
+      email
+    }
+  }
+`;
 
-interface UsersState {
-    users: User[];
-    loading: boolean;
-    error?: string;
+const DELETE_USER_MUTATION = gql`
+  mutation DeleteUser($id: ID!) {
+    deleteUser(id: $id)
+  }
+`;
+
+
+export const getUsers = createAsyncThunk('users/fetch', async () => {
+    const res = await client.query({
+        query: GET_USERS_QUERY,
+    });
+
+    return res.data.users;
+});
+
+export const deleteUserById = createAsyncThunk('users/deleteUser', async (userId: string | number, { rejectWithValue }) => {
+    try {
+        const response = await client.mutate({ mutation: DELETE_USER_MUTATION, variables: { id: userId }, });
+
+        return userId;
+    } catch (error: any) {
+        return rejectWithValue(error.message || 'Failed to delete user');
+    }
 }
+);
 
 const initialState: UsersState = {
     users: [],
@@ -21,49 +46,13 @@ const initialState: UsersState = {
     error: ''
 };
 
-
-
-export const getUsers = createAsyncThunk('users/fetch', async () => {
-    const res = await client.query({
-        query: gql`
-      query GetUsers {
-        users {
-          id
-          name
-          email
-        }
-      }
-    `
-    });
-
-    return res.data.users;
-});
-
-export const deleteUserById = createAsyncThunk(
-    'users/deleteUser',
-    async (userId: string | number, { rejectWithValue }) => {
-        try {
-            const response = await client.mutate({
-                mutation: gql`
-                mutation DeleteUser($id: ID!) {
-                    deleteUser(id: $id)
-                }`,
-                variables: {
-                    id: userId,
-                },
-            });
-
-            return userId;
-        } catch (error: any) {
-            return rejectWithValue(error.message || 'Failed to delete user');
-        }
-    }
-);
-
 const userSlice = createSlice({
     name: 'users',
     initialState,
     reducers: {
+        clearUserList(state) {
+            state.users = []
+        }
     },
     extraReducers: builder => {
         builder
@@ -91,5 +80,5 @@ const userSlice = createSlice({
     },
 });
 
-// export const { } = userSlice.actions;
+export const { clearUserList } = userSlice.actions;
 export default userSlice.reducer;

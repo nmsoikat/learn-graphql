@@ -17,9 +17,9 @@ import { JwtStrategy } from './jwt.strategy';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       path: '/graphql', //default path
-      context: ({ req }) => {
-        return { req, user: req.user }; // inject user into context directly
-      },
+      // context: ({ req }) => {
+      //   return { req, user: req.user }; // inject user into context directly
+      // },
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',

@@ -50,6 +50,7 @@ export class UserResolver {
     }
 
     @Mutation(() => Boolean)
+    // @Public()
     deleteUser(@Args('id', { type: () => ID }) id: number) {
         return this.userService.remove(id);
     }

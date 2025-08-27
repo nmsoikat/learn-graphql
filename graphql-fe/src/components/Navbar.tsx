@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { logout } from '../redux/slices/auth-slice'; // adjust path
 import { useRouter } from 'next/router';
 import { useAppSelector } from '@/redux/hooks';
+import { clearUserList } from '@/redux/slices/user-slice';
 
 export default function Navbar() {
     const [mounted, setMounted] = useState(false);
@@ -17,6 +18,7 @@ export default function Navbar() {
 
     const handleLogout = () => {
         dispatch(logout());
+        dispatch(clearUserList());
         localStorage.removeItem('token')
         router.push('/signin');
     };

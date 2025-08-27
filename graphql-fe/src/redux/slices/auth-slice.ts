@@ -1,19 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import client from '../../graphql/apollo-client';
 import { gql } from '@apollo/client';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
-
-interface AuthState {
-  user: User | null;
-  token: string | null;
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error?: string;
-}
+import { AuthState } from '@/interfaces/User';
+import { Signin, Signup } from '@/types/User';
 
 const signupMutation = gql`
   mutation Signup($input: CreateUserInput!) {
@@ -28,7 +17,7 @@ const loginMutation = gql`
   }
 `;
 
-export const signup = createAsyncThunk('auth/signup', async (data: { name: string; email: string; password: string; }, { rejectWithValue }) => {
+export const signup = createAsyncThunk('auth/signup', async (data: Signup, { rejectWithValue }) => {
   try {
     const res = await client.mutate({ mutation: signupMutation, variables: { input: data } });
     return res.data.createUser;
@@ -37,7 +26,7 @@ export const signup = createAsyncThunk('auth/signup', async (data: { name: strin
   }
 });
 
-export const login = createAsyncThunk('auth/login', async (data: { email: string; password: string; }, { rejectWithValue }) => {
+export const login = createAsyncThunk('auth/login', async (data: Signin, { rejectWithValue }) => {
   try {
     const res = await client.mutate({ mutation: loginMutation, variables: { input: data } });
     localStorage.setItem('token', res.data.login);
@@ -50,7 +39,6 @@ export const login = createAsyncThunk('auth/login', async (data: { email: string
 const initialState: AuthState = {
   user: null,
   token: typeof window !== 'undefined' ? localStorage.getItem('token') : null,
-  // token: null,
   status: 'idle',
   error: ''
 };
@@ -97,5 +85,6 @@ const authSlice = createSlice({
       });
   }
 });
+
 export const { logout } = authSlice.actions;
 export default authSlice.reducer;
